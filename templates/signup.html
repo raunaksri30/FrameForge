@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - FrameForge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Create Your Profile</h1>
+        <p>Tell us what genres you love and get personalized recommendations</p>
+    </div>
+
+    <form method="POST" class="signup-form">
+        <div class="form-group">
+            <label for="username">Your Name</label>
+            <input type="text" id="username" name="username" placeholder="Enter your name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Select Your Favorite Genres</label>
+            <p class="hint">Choose at least one genre you enjoy</p>
+
+            <div class="genre-grid">
+                {% for genre in genres %}
+                <label class="genre-checkbox">
+                    <input type="checkbox" name="interests" value="{{ genre }}">
+                    <span class="genre-card">
+                        <span class="genre-icon">
+                            {% if genre == 'Action' %}🔥
+                            {% elif genre == 'Adventure' %}🗺️
+                            {% elif genre == 'Animation' %}🎨
+                            {% elif genre == 'Comedy' %}😂
+                            {% elif genre == 'Crime' %}🕵️
+                            {% elif genre == 'Documentary' %}📽️
+                            {% elif genre == 'Drama' %}🎭
+                            {% elif genre == 'Fantasy' %}🧙
+                            {% elif genre == 'Horror' %}👻
+                            {% elif genre == 'Romance' %}💕
+                            {% elif genre == 'Sci-Fi' %}🚀
+                            {% elif genre == 'Thriller' %}😱
+                            {% else %}🎬
+                            {% endif %}
+                        </span>
+                        <span class="genre-name">{{ genre }}</span>
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn-signup">Create Profile</button>
+    </form>
+</div>
+
+<style>
+    .signup-form {
+        max-width: 700px;
+        margin: 0 auto;
+        padding-bottom: 80px;
+    }
+
+    .form-group {
+        margin-bottom: 32px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .form-group .hint {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 14px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-group input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+    }
+
+    .genre-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .genre-checkbox {
+        cursor: pointer;
+    }
+
+    .genre-checkbox input {
+        display: none;
+    }
+
+    .genre-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 16px;
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        transition: var(--transition);
+    }
+
+    .genre-checkbox input:checked+.genre-card {
+        border-color: var(--accent-primary);
+        background: rgba(224, 127, 0, 0.15);
+    }
+
+    .genre-card:hover {
+        border-color: var(--accent-primary);
+    }
+
+    .genre-icon {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+
+    .genre-name {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .btn-signup {
+        width: 100%;
+        padding: 16px;
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .btn-signup:hover {
+        background: var(--accent-secondary);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="FrameForge - Your curated collection of cinema's greatest films. Find your next favorite movie.">
+  <title>{% block title %}FrameForge{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="{{ url_for('home') }}" class="logo">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="FrameForge">
+        <span class="logo-text">FrameForge</span>
+      </a>
+
+      <form class="nav-search" action="{{ url_for('search_page') }}" method="GET">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" name="q" placeholder="Search movies..." value="{{ request.args.get('q', '') }}">
+      </form>
+
+      <ul class="nav-links">
+        <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Browse</a></li>
+        <li><a href="{{ url_for('mood_page') }}"
+            class="{% if request.endpoint == 'mood_page' %}active{% endif %}">Moods</a></li>
+        <li><a href="{{ url_for('top_rated_page') }}"
+            class="{% if request.endpoint == 'top_rated_page' %}active{% endif %}">Top Rated</a></li>
+      </ul>
+
+      {% if session.get('user') %}
+      <a href="{{ url_for('profile_page') }}" class="btn-signin">{{ session.user.username }}</a>
+      {% else %}
+      <a href="{{ url_for('signup_page') }}" class="btn-signin">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="features-header">
+        <h2>Why Choose FrameForge?</h2>
+        <p>Your ultimate movie discovery platform</p>
+      </div>
+
+      <ul class="features-list">
+        <li class="feature-item">
+          <span class="feature-icon">🎭</span>
+          <div class="feature-content">
+            <h3>Mood-Based Discovery</h3>
+            <p>19 unique moods to match your feelings with the perfect movie experience</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">⭐</span>
+          <div class="feature-content">
+            <h3>Community Ratings</h3>
+            <p>Over 100,000+ ratings from real movie enthusiasts worldwide</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">🎯</span>
+          <div class="feature-content">
+            <h3>Personalized Recommendations</h3>
+            <p>Sign up and get movie suggestions tailored to your genre preferences</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">🖼️</span>
+          <div class="feature-content">
+            <h3>HD Movie Posters</h3>
+            <p>Beautiful high-quality posters powered by TMDB database</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">📺</span>
+          <div class="feature-content">
+            <h3>Streaming Integration</h3>
+            <p>Quick links to find where your favorite movies are streaming</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">🔍</span>
+          <div class="feature-content">
+            <h3>Smart Search</h3>
+            <p>Instantly search through 9,700+ movies in our curated collection</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">🏆</span>
+          <div class="feature-content">
+            <h3>Top Rated Films</h3>
+            <p>Explore the highest-rated movies filtered by authentic user reviews</p>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <span class="feature-icon">🎬</span>
+          <div class="feature-content">
+            <h3>Rich Movie Database</h3>
+            <p>Comprehensive collection spanning all genres from classics to modern hits</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">FrameForge</div>
+      <p class="footer-tagline">Your curated collection of cinema's greatest films</p>
+
+      <div class="footer-genres">
+        <a href="{{ url_for('mood_page', mood='excited') }}" class="footer-genre">Action</a>
+        <a href="{{ url_for('mood_page', mood='funny') }}" class="footer-genre">Comedy</a>
+        <a href="{{ url_for('mood_page', mood='sad') }}" class="footer-genre">Drama</a>
+        <a href="{{ url_for('mood_page', mood='scary') }}" class="footer-genre">Thriller</a>
+        <a href="{{ url_for('mood_page', mood='romantic') }}" class="footer-genre">Romance</a>
+      </div>
+
+      <p class="copyright">© 2026 FrameForge. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+
+</html>

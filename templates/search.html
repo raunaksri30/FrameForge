@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Search - FrameForge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Search Movies</h1>
+        <p>Find any film in our collection</p>
+    </div>
+
+    <form method="GET" style="max-width: 600px; margin: 0 auto 48px;">
+        <div class="nav-search" style="max-width: 100%;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text" name="q" placeholder="Search by movie title..." value="{{ query }}" style="width: 100%;">
+        </div>
+    </form>
+
+    {% if results %}
+    <div class="section-header">
+        <h2>Results for "{{ query }}"</h2>
+    </div>
+
+    <div class="movies-grid">
+        {% for movie in results %}
+        <div class="movie-card">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                {% if movie.avg_rating %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                {% endif %}
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    {% if movie.num_ratings %}
+                    <span>{{ movie.num_ratings }} ratings</span>
+                    {% else %}
+                    <span>No ratings yet</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif query %}
+    <div class="empty-state">
+        <div class="icon">🔍</div>
+        <p>No movies found for "{{ query }}"</p>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="icon">🎬</div>
+        <p>Start typing to search for movies</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

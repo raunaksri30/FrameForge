@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}FrameForge - Discover Great Cinema{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Featured Section -->
+    <div class="section-header">
+        <h2>Featured Films</h2>
+        <a href="{{ url_for('top_rated_page') }}">View all →</a>
+    </div>
+
+    <div class="movies-grid">
+        {% for movie in featured %}
+        <div class="movie-card">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+                <div class="watch-links">
+                    <a href="https://www.google.com/search?q={{ movie.title | urlencode }}+watch+online" target="_blank"
+                        class="watch-btn google">🔍 Google</a>
+                    <a href="https://www.justwatch.com/us/search?q={{ movie.title | urlencode }}" target="_blank"
+                        class="watch-btn stream">📺 Stream</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Mood Section -->
+    <div class="section-header">
+        <h2>Browse by Mood</h2>
+        <a href="{{ url_for('mood_page') }}">All moods →</a>
+    </div>
+
+    <div class="mood-grid" style="padding-bottom: 40px;">
+        <a href="{{ url_for('mood_page', mood='happy') }}" class="mood-card">
+            <span class="emoji">😊</span>
+            <span class="label">Happy</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='excited') }}" class="mood-card">
+            <span class="emoji">🤩</span>
+            <span class="label">Excited</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='romantic') }}" class="mood-card">
+            <span class="emoji">💕</span>
+            <span class="label">Romantic</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='scary') }}" class="mood-card">
+            <span class="emoji">😱</span>
+            <span class="label">Thrilling</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='epic') }}" class="mood-card">
+            <span class="emoji">⚔️</span>
+            <span class="label">Epic</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='mind-bending') }}" class="mood-card">
+            <span class="emoji">🌀</span>
+            <span class="label">Mind-Bending</span>
+        </a>
+    </div>
+</div>
+
+<style>
+    .watch-links {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .watch-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .watch-btn.google {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .watch-btn.google:hover {
+        border-color: var(--accent-primary);
+        color: var(--text-primary);
+    }
+
+    .watch-btn.stream {
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+    }
+
+    .watch-btn.stream:hover {
+        background: var(--accent-secondary);
+    }
+</style>
+{% endblock %}
