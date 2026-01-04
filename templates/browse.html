@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Top Rated - FrameForge{% endblock %}
+{% block title %}{{ category_title }} - FrameForge{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h1>Top Rated Films</h1>
-        <p>The highest rated movies in our collection</p>
+        <h1>{{ category_title }}</h1>
+        <p>Top rated movies in this category</p>
     </div>
 
     <div class="user-selector">
-        <form method="GET" style="display: flex; gap: 16px; align-items: center;">
+        <form method="GET" action="{{ url_for('browse_category', category=category) }}"
+            style="display: flex; gap: 16px; align-items: center; justify-content: center;">
             <label>Minimum ratings:</label>
             <select name="min_ratings" onchange="this.form.submit()">
                 <option value="20" {% if min_ratings==20 %}selected{% endif %}>20+</option>
@@ -48,44 +49,44 @@
         </div>
         {% endfor %}
     </div>
+
+    {% if not movies %}
+    <div class="empty-state">
+        <div class="icon">No Results</div>
+        <p>No movies found in this category</p>
+    </div>
+    {% endif %}
 </div>
 
 <style>
-    .watch-links {
-        display: flex;
-        gap: 8px;
-        margin-top: 12px;
-    }
-
-    .watch-btn {
-        flex: 1;
-        padding: 8px 12px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 0.8rem;
-        font-weight: 500;
+    .page-header {
         text-align: center;
-        transition: var(--transition);
+        padding: 40px 0;
     }
 
-    .watch-btn.google {
-        background: var(--bg-secondary);
-        color: var(--text-secondary);
-        border: 1px solid var(--border-color);
+    .page-header h1 {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        margin-bottom: 8px;
     }
 
-    .watch-btn.google:hover {
-        border-color: var(--accent-primary);
-        color: var(--text-primary);
+    .page-header p {
+        color: var(--text-muted);
     }
 
-    .watch-btn.stream {
-        background: var(--accent-primary);
-        color: var(--bg-primary);
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
     }
 
-    .watch-btn.stream:hover {
-        background: var(--accent-secondary);
+    .empty-state .icon {
+        font-size: 4rem;
+        margin-bottom: 16px;
+    }
+
+    .empty-state p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
     }
 </style>
 {% endblock %}

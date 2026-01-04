@@ -31,7 +31,11 @@
 
     <div class="movies-grid">
         {% for movie in recommendations %}
-        <div class="movie-card">
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
             <div class="movie-poster">
                 {% if movie.poster_url %}
                 <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
@@ -47,12 +51,6 @@
                 <h3 class="movie-title">{{ movie.title }}</h3>
                 <div class="movie-meta">
                     <span>{{ movie.num_ratings }} ratings</span>
-                </div>
-                <div class="watch-links">
-                    <a href="https://www.google.com/search?q={{ movie.title | urlencode }}+watch+online" target="_blank"
-                        class="watch-btn google">🔍 Google</a>
-                    <a href="https://www.justwatch.com/us/search?q={{ movie.title | urlencode }}" target="_blank"
-                        class="watch-btn stream">📺 Stream</a>
                 </div>
             </div>
         </div>

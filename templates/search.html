@@ -27,7 +27,11 @@
 
     <div class="movies-grid">
         {% for movie in results %}
-        <div class="movie-card">
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) if movie.avg_rating else '0.0' }}"
+            data-poster="{{ movie.poster_url or '' }}" data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
             <div class="movie-poster">
                 {% if movie.poster_url %}
                 <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
@@ -56,14 +60,53 @@
     </div>
     {% elif query %}
     <div class="empty-state">
-        <div class="icon">🔍</div>
+        <div class="icon">No Results</div>
         <p>No movies found for "{{ query }}"</p>
     </div>
     {% else %}
     <div class="empty-state">
-        <div class="icon">🎬</div>
+        <div class="icon">Search</div>
         <p>Start typing to search for movies</p>
     </div>
     {% endif %}
 </div>
+
+<style>
+    .watch-links {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .watch-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .watch-btn.google {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .watch-btn.google:hover {
+        border-color: var(--accent-primary);
+        color: var(--text-primary);
+    }
+
+    .watch-btn.stream {
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+    }
+
+    .watch-btn.stream:hover {
+        background: var(--accent-secondary);
+    }
+</style>
 {% endblock %}
