@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - Watch on FrameForge{% endblock %}
+
+{% block content %}
+<div class="watch-page">
+    <!-- Video Player Section -->
+    <div class="player-section">
+        <div class="player-container">
+            {% if movie.tmdb_id %}
+            <iframe src="https://www.vidking.net/embed/movie/{{ movie.tmdb_id }}" class="video-player" frameborder="0"
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            {% else %}
+            <div class="player-error">
+                <span class="error-icon">🎬</span>
+                <h3>Stream Unavailable</h3>
+                <p>This movie is not available for streaming at the moment.</p>
+                <a href="https://www.google.com/search?q={{ movie.title | urlencode }}+watch+online" target="_blank"
+                    class="btn-search">
+                    🔍 Search Online
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Movie Info Section -->
+    <div class="container">
+        <div class="movie-details">
+            <div class="movie-poster-side">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="poster-img">
+                {% else %}
+                <div class="poster-placeholder">🎬</div>
+                {% endif %}
+            </div>
+
+            <div class="movie-info-side">
+                <h1 class="movie-title-large">{{ movie.title }}</h1>
+
+                <div class="movie-meta-row">
+                    <span class="meta-badge rating">
+                        ⭐ {{ "%.1f"|format(movie.avg_rating) }}
+                    </span>
+                    <span class="meta-badge">
+                        👥 {{ movie.num_ratings }} ratings
+                    </span>
+                    {% if movie.tmdb_rating %}
+                    <span class="meta-badge tmdb">
+                        🎯 TMDB: {{ "%.1f"|format(movie.tmdb_rating) }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="genre-tags">
+                    {% for genre in movie.genres.split('|') %}
+                    <span class="genre-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+
+                {% if movie.overview %}
+                <div class="movie-overview">
+                    <h3>Overview</h3>
+                    <p>{{ movie.overview }}</p>
+                </div>
+                {% endif %}
+
+                {% if movie.cast %}
+                <div class="movie-cast">
+                    <h3>Cast</h3>
+                    <div class="cast-list">
+                        {% for actor in movie.cast %}
+                        <span class="cast-item">{{ actor }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="action-buttons">
+                    <a href="{{ url_for('home') }}" class="btn-action secondary">
+                        ← Back to Browse
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Similar Movies -->
+        {% if similar_movies %}
+        <div class="similar-section">
+            <h2 class="section-title">You May Also Like</h2>
+            <div class="similar-grid">
+                {% for similar in similar_movies %}
+                <a href="{{ url_for('watch_page', movie_id=similar.movieId) }}" class="similar-card">
+                    <div class="similar-poster">
+                        {% if similar.poster_url %}
+                        <img src="{{ similar.poster_url }}" alt="{{ similar.title }}" loading="lazy">
+                        {% endif %}
+                        <span class="rating-badge">{{ "%.1f"|format(similar.avg_rating) }}</span>
+                    </div>
+                    <div class="similar-info">
+                        <h4>{{ similar.title }}</h4>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Watch Page Styles */
+    .watch-page {
+        padding-top: 60px;
+    }
+
+    .player-section {
+        background: #000;
+        padding: 20px 0;
+    }
+
+    .player-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        aspect-ratio: 16/9;
+        background: #0a0a0a;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .video-player {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .player-error {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        color: var(--text-secondary);
+        padding: 40px;
+    }
+
+    .player-error .error-icon {
+        font-size: 4rem;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .player-error h3 {
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+
+    .player-error .btn-search {
+        margin-top: 20px;
+        padding: 12px 24px;
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .player-error .btn-search:hover {
+        background: var(--accent-secondary);
+        transform: translateY(-2px);
+    }
+
+    /* Movie Details */
+    .movie-details {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 40px;
+        padding: 48px 0;
+    }
+
+    .movie-poster-side {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .poster-img {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 12px 40px rgba(224, 127, 0, 0.2);
+    }
+
+    .poster-placeholder {
+        width: 100%;
+        aspect-ratio: 2/3;
+        background: var(--bg-card);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        opacity: 0.3;
+    }
+
+    .movie-title-large {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        line-height: 1.2;
+    }
+
+    .movie-meta-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .meta-badge {
+        padding: 6px 14px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .meta-badge.rating {
+        background: rgba(251, 191, 36, 0.15);
+        border-color: rgba(251, 191, 36, 0.3);
+        color: #fbbf24;
+    }
+
+    .meta-badge.tmdb {
+        background: rgba(1, 180, 228, 0.15);
+        border-color: rgba(1, 180, 228, 0.3);
+        color: #01b4e4;
+    }
+
+    .genre-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+
+    .genre-tag {
+        padding: 6px 16px;
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .movie-overview,
+    .movie-cast {
+        margin-bottom: 24px;
+    }
+
+    .movie-overview h3,
+    .movie-cast h3 {
+        font-size: 1.1rem;
+        color: var(--accent-primary);
+        margin-bottom: 10px;
+    }
+
+    .movie-overview p {
+        color: var(--text-secondary);
+        line-height: 1.7;
+    }
+
+    .cast-list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .cast-item {
+        padding: 6px 14px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 32px;
+    }
+
+    .btn-action {
+        padding: 14px 28px;
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-action:hover {
+        background: var(--accent-secondary);
+        transform: translateY(-2px);
+    }
+
+    .btn-action.secondary {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .btn-action.secondary:hover {
+        border-color: var(--accent-primary);
+        background: rgba(224, 127, 0, 0.1);
+    }
+
+    /* Similar Movies */
+    .similar-section {
+        padding: 48px 0 80px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .section-title {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+    }
+
+    .similar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 20px;
+    }
+
+    .similar-card {
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .similar-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .similar-poster {
+        position: relative;
+        aspect-ratio: 2/3;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--bg-card);
+        margin-bottom: 10px;
+    }
+
+    .similar-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .similar-poster .rating-badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+    }
+
+    .similar-info h4 {
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .movie-details {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .movie-poster-side {
+            position: static;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .movie-title-large {
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .movie-meta-row,
+        .genre-tags,
+        .action-buttons {
+            justify-content: center;
+        }
+
+        .movie-overview,
+        .movie-cast {
+            text-align: center;
+        }
+
+        .cast-list {
+            justify-content: center;
+        }
+
+        .similar-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}

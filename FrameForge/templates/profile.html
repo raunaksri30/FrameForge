@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }}'s Profile - FrameForge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="avatar">{{ user.username[0].upper() }}</div>
+            <div>
+                <h1>Welcome, {{ user.username }}!</h1>
+                <p>Your personalized movie recommendations</p>
+            </div>
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+
+    <div class="interests-section">
+        <h3>Your Interests</h3>
+        <div class="interests-tags">
+            {% for interest in user.interests %}
+            <span class="interest-tag">{{ interest }}</span>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('signup_page') }}" class="update-link">Update interests</a>
+    </div>
+
+    <div class="section-header">
+        <h2>Recommended For You</h2>
+    </div>
+
+    <div class="movies-grid">
+        {% for movie in recommendations %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 100px 0 40px;
+    }
+
+    .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .avatar {
+        width: 64px;
+        height: 64px;
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .profile-info h1 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        margin-bottom: 4px;
+    }
+
+    .profile-info p {
+        color: var(--text-secondary);
+    }
+
+    .btn-logout {
+        padding: 10px 24px;
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .btn-logout:hover {
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+    }
+
+    .interests-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 40px;
+    }
+
+    .interests-section h3 {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+    }
+
+    .interests-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .interest-tag {
+        padding: 8px 16px;
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .update-link {
+        color: var(--accent-primary);
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .update-link:hover {
+        text-decoration: underline;
+    }
+
+    .watch-links {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .watch-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .watch-btn.google {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .watch-btn.google:hover {
+        border-color: var(--accent-primary);
+        color: var(--text-primary);
+    }
+
+    .watch-btn.stream {
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+    }
+
+    .watch-btn.stream:hover {
+        background: var(--accent-secondary);
+    }
+</style>
+{% endblock %}
