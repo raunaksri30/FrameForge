@@ -1,6 +1,6 @@
 # FrameForge - Movie Recommender System
 
-A full-stack movie recommendation web application with streaming integration, user authentication, and personalized recommendations powered by machine learning algorithms.
+FrameForge is a comprehensive movie recommendation platform designed to transform how users discover and watch films. Built with Flask and Python, it leverages machine learning algorithms to provide personalized suggestions based on over 100,000 user ratings spanning from 1996 to 2018 and genre preferences. The application features a dynamic, dark-themed interface where users can browse top-rated content, explore movies by mood, and search a vast database of over 9,700 titles. With secure user authentication, real-time poster integration via the TMDB API, and direct movie streaming capabilities, FrameForge offers a seamless, end-to-end entertainment experience from discovery to playback.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0+-green.svg)
