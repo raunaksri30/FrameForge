@@ -1,0 +1,616 @@
+{% extends "base.html" %}
+
+{% block title %}FrameForge - Discover Great Cinema{% endblock %}
+
+{% block content %}
+<!-- Interactive Hero Section -->
+<section class="hero">
+    <!-- Floating Particles -->
+    <div class="particles">
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+        <span class="particle"></span>
+    </div>
+
+    <!-- Floating Shapes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="hero-content">
+        <!-- <div class="hero-badge">AI-Powered Movie Recommendations</div> -->
+        <h1 class="hero-title">Discover Your Next<br>Favorite Movie</h1>
+        <p class="hero-subtitle">
+            Let your mood guide you to the perfect film. <span class="typewriter" id="typewriter"></span>
+        </p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('mood_page') }}" class="btn-hero btn-hero-primary">
+                Browse by Mood
+            </a>
+            <a href="{{ url_for('signup_page') }}" class="btn-hero btn-hero-secondary">
+                Get Personalized Picks
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">9,700+</span>
+                <span class="stat-label">Movies</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100K+</span>
+                <span class="stat-label">Ratings</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">19</span>
+                <span class="stat-label">Moods</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- New For You Section (only for logged-in users) -->
+    {% if new_for_you %}
+    <div class="section-header">
+        <h2>New For You</h2>
+        <a href="{{ url_for('profile_page') }}">View all →</a>
+    </div>
+    <div class="movies-grid">
+        {% for movie in new_for_you %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Trending Section -->
+    <div class="section-header">
+        <h2>Trending Now</h2>
+        <a href="{{ url_for('top_rated_page') }}">View all →</a>
+    </div>
+    <div class="movies-grid">
+        {% for movie in trending %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Top Action Section -->
+    <div class="section-header">
+        <h2>Action & Adventure</h2>
+        <a href="{{ url_for('browse_category', category='action') }}">View all →</a>
+    </div>
+    <div class="movies-grid">
+        {% for movie in top_action %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Top Drama Section -->
+    <div class="section-header">
+        <h2>Drama</h2>
+        <a href="{{ url_for('browse_category', category='drama') }}">View all →</a>
+    </div>
+    <div class="movies-grid">
+        {% for movie in top_drama %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Top Comedy Section -->
+    <div class="section-header">
+        <h2>Comedy</h2>
+        <a href="{{ url_for('browse_category', category='comedy') }}">View all →</a>
+    </div>
+    <div class="movies-grid">
+        {% for movie in top_comedy %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Top Thriller Section -->
+    <div class="section-header">
+        <h2>Thriller & Horror</h2>
+        <a href="{{ url_for('browse_category', category='thriller') }}">View all →</a>
+    </div>
+    <div class="movies-grid">
+        {% for movie in top_thriller %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Mood Section -->
+    <div class="section-header">
+        <h2>Browse by Mood</h2>
+        <a href="{{ url_for('mood_page') }}">All moods →</a>
+    </div>
+
+    <div class="mood-grid" style="padding-bottom: 40px;">
+        <a href="{{ url_for('mood_page', mood='happy') }}" class="mood-card">
+            <span class="emoji">😊</span>
+            <span class="label">Happy</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='excited') }}" class="mood-card">
+            <span class="emoji">🤩</span>
+            <span class="label">Excited</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='romantic') }}" class="mood-card">
+            <span class="emoji">💕</span>
+            <span class="label">Romantic</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='scary') }}" class="mood-card">
+            <span class="emoji">😱</span>
+            <span class="label">Thrilling</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='epic') }}" class="mood-card">
+            <span class="emoji">⚔️</span>
+            <span class="label">Epic</span>
+        </a>
+        <a href="{{ url_for('mood_page', mood='mind-bending') }}" class="mood-card">
+            <span class="emoji">🌀</span>
+            <span class="label">Mind-Bending</span>
+        </a>
+    </div>
+</div>
+
+<!-- Movie Detail Modal -->
+<div id="movie-modal" class="movie-modal" onclick="closeModalOutside(event)">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeMovieModal()">&times;</button>
+        <div class="modal-body">
+            <div class="modal-poster">
+                <img id="modal-poster-img" src="" alt="Movie Poster">
+            </div>
+            <div class="modal-details">
+                <div class="modal-rating">
+                    <span class="rating-circle" id="modal-rating">0.0</span>
+                    <span class="rating-label">User Score</span>
+                </div>
+                <h2 id="modal-title" class="modal-title"></h2>
+                <div class="modal-genres" id="modal-genres"></div>
+                <h3>Overview</h3>
+                <p id="modal-overview" class="modal-overview"></p>
+                <h3>Top Billed Cast</h3>
+                <p id="modal-cast" class="modal-cast"></p>
+                <div class="modal-actions">
+                    <a id="modal-watch" href="#" class="watch-btn watch-now">▶ Watch Now</a>
+                    <a id="modal-google" href="#" target="_blank" class="watch-btn google">Search Google</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .watch-links {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .watch-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .watch-btn.google {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .watch-btn.google:hover {
+        border-color: var(--accent-primary);
+        color: var(--text-primary);
+    }
+
+    .watch-btn.stream {
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+    }
+
+    .watch-btn.stream:hover {
+        background: var(--accent-secondary);
+    }
+
+    .watch-btn.watch-now {
+        background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+        color: white;
+        font-weight: 600;
+        flex: 2;
+    }
+
+    .watch-btn.watch-now:hover {
+        background: linear-gradient(135deg, #f6121d 0%, #c92127 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    }
+
+    /* Movie Modal Styles */
+    .movie-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 2000;
+        overflow-y: auto;
+        padding: 40px 20px;
+        backdrop-filter: blur(8px);
+    }
+
+    .movie-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: var(--bg-card);
+        border-radius: 16px;
+        max-width: 900px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    .modal-close:hover {
+        background: var(--accent-primary);
+    }
+
+    .modal-body {
+        display: flex;
+        gap: 0;
+    }
+
+    .modal-poster {
+        flex: 0 0 300px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+
+    .modal-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .modal-details {
+        flex: 1;
+        padding: 32px;
+    }
+
+    .modal-rating {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .rating-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #21d07a, #90cea1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #081c22;
+    }
+
+    .rating-label {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .modal-title {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+    }
+
+    .modal-genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .modal-genres span {
+        padding: 4px 12px;
+        background: rgba(224, 127, 0, 0.2);
+        border: 1px solid var(--accent-primary);
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: var(--accent-light);
+    }
+
+    .modal-details h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+    }
+
+    .modal-overview {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 24px;
+    }
+
+    .modal-cast {
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .modal-actions .watch-btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .modal-body {
+            flex-direction: column;
+        }
+
+        .modal-poster {
+            flex: 0 0 auto;
+            height: 300px;
+        }
+
+        .modal-details {
+            padding: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+<script>
+    function openMovieModal(card) {
+        const modal = document.getElementById('movie-modal');
+        const title = card.dataset.title;
+        const rating = card.dataset.rating;
+        const poster = card.dataset.poster;
+        const overview = card.dataset.overview;
+        const cast = card.dataset.cast;
+        const genres = card.dataset.genres;
+        const movieId = card.dataset.movieid;
+
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-rating').textContent = rating;
+        document.getElementById('modal-poster-img').src = poster || '';
+        document.getElementById('modal-overview').textContent = overview;
+        document.getElementById('modal-cast').textContent = cast;
+
+        // Populate genres
+        const genresContainer = document.getElementById('modal-genres');
+        genresContainer.innerHTML = '';
+        if (genres) {
+            genres.split('|').forEach(genre => {
+                const span = document.createElement('span');
+                span.textContent = genre;
+                genresContainer.appendChild(span);
+            });
+        }
+
+        // Set watch links
+        const encodedTitle = encodeURIComponent(title);
+        document.getElementById('modal-watch').href = movieId ? `/watch/${movieId}` : '#';
+        document.getElementById('modal-google').href = `https://www.google.com/search?q=${encodedTitle}+watch+online`;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMovieModal() {
+        const modal = document.getElementById('movie-modal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function closeModalOutside(event) {
+        if (event.target.id === 'movie-modal') {
+            closeMovieModal();
+        }
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeMovieModal();
+        }
+    });
+</script>
+{% endblock %}

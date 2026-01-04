@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Top Rated - FrameForge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Top Rated Films</h1>
+        <p>The highest rated movies in our collection</p>
+    </div>
+
+    <div class="user-selector">
+        <form method="GET" style="display: flex; gap: 16px; align-items: center;">
+            <label>Minimum ratings:</label>
+            <select name="min_ratings" onchange="this.form.submit()">
+                <option value="20" {% if min_ratings==20 %}selected{% endif %}>20+</option>
+                <option value="50" {% if min_ratings==50 %}selected{% endif %}>50+</option>
+                <option value="100" {% if min_ratings==100 %}selected{% endif %}>100+</option>
+                <option value="200" {% if min_ratings==200 %}selected{% endif %}>200+</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="movies-grid">
+        {% for movie in movies %}
+        <div class="movie-card" onclick="openMovieModal(this)" data-title="{{ movie.title }}"
+            data-rating="{{ '%.1f'|format(movie.avg_rating) }}" data-poster="{{ movie.poster_url or '' }}"
+            data-overview="{{ movie.overview or 'No overview available.' }}"
+            data-cast="{{ movie.cast | join(', ') if movie.cast else 'Cast information not available.' }}"
+            data-genres="{{ movie.genres }}" data-movieid="{{ movie.movieId }}">
+            <div class="movie-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+                {% endif %}
+                <span class="rating-badge">{{ "%.1f"|format(movie.avg_rating) }}</span>
+                <div class="poster-tags">
+                    {% for genre in movie.genres.split('|')[:2] %}
+                    <span class="poster-tag">{{ genre }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                    <span>{{ movie.num_ratings }} ratings</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .watch-links {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .watch-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .watch-btn.google {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+    }
+
+    .watch-btn.google:hover {
+        border-color: var(--accent-primary);
+        color: var(--text-primary);
+    }
+
+    .watch-btn.stream {
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+    }
+
+    .watch-btn.stream:hover {
+        background: var(--accent-secondary);
+    }
+</style>
+{% endblock %}
