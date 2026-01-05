@@ -159,6 +159,15 @@ Using the MovieLens Latest Small dataset:
 
 ---
 
+## Future Features
+
+- **PostgreSQL Integration** - Persistent database for production deployment
+- **User Watchlist** - Save movies to watch later
+- **Social Sharing** - Share recommendations with friends
+- **Advanced ML Models** - Neural Collaborative Filtering
+
+---
+
 ## License
 
 For educational purposes. MovieLens dataset provided by GroupLens Research.
