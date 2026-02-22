@@ -8,12 +8,6 @@ FrameForge is a comprehensive movie recommendation platform designed to transfor
 
 ---
 
-## Demo
-
-> *Demo video will be added here*
-
----
-
 ## Features
 
 ### Core Functionality
